@@ -5,15 +5,31 @@
 
 @layer base {
   * {
-    /* font-family: "Roboto Slab", serif; */
     font-family: "Inria Sans", sans-serif;
+  }
+
+  main {
+    @apply flex flex-col items-center;
   }
 
   #background {
     background-image: url("assets/background.png");
-    @apply bg-cover bg-no-repeat bg-top fixed inset-0;
+    @apply bg-cover bg-no-repeat bg-top fixed inset-0 -z-50;
   }
 }
 
 @layer components {
+  /** <- Header -> **/
+  #header {
+    @apply w-full mt-6 mb-12 flex justify-center items-center;
+  }
+  #header h1 {
+    font-family: "Roboto Slab", serif;
+    @apply font-medium text-8xl bg-gradient-to-r from-main-orange-base to-main-orange-light text-opacity-0 text-transparent bg-clip-text;
+  }
+  #header img {
+    @apply w-32;
+  }
+
+  /** <- Main Question -> **/
 }
