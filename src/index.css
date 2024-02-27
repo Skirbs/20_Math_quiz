@@ -1,0 +1,19 @@
+@import url("https://fonts.googleapis.com/css2?family=Inria+Sans:ital,wght@0,300;0,400;0,700;1,300;1,400;1,700&family=Roboto+Slab:wght@100..900&display=swap");
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  * {
+    /* font-family: "Roboto Slab", serif; */
+    font-family: "Inria Sans", sans-serif;
+  }
+
+  #background {
+    background-image: url("assets/background.png");
+    @apply bg-cover bg-no-repeat bg-top fixed inset-0;
+  }
+}
+
+@layer components {
+}
