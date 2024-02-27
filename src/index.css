@@ -19,6 +19,10 @@
 }
 
 @layer components {
+  /** <- Reusable -> **/
+  .card {
+    @apply bg-main-white-dark p-2 rounded-xl;
+  }
   /** <- Header -> **/
   #header {
     @apply w-full mt-6 mb-12 flex justify-center items-center;
