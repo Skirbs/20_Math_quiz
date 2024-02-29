@@ -9,31 +9,82 @@
   }
 
   main {
-    @apply flex flex-col items-center;
+    @apply flex flex-col items-center w-full px-10 md:px-0 md:w-[600px] lg:w-[900px] m-auto;
   }
 
   #background {
     background-image: url("assets/background.png");
-    @apply bg-cover bg-no-repeat bg-top fixed inset-0 -z-50;
+    @apply fixed inset-0 bg-top bg-no-repeat bg-cover -z-50;
   }
 }
 
 @layer components {
   /** <- Reusable -> **/
   .card {
-    @apply bg-main-white-dark p-2 rounded-xl;
+    @apply p-2 bg-main-white-dark rounded-xl drop-shadow-main-base;
+  }
+  .setting-button {
+    @apply absolute flex items-center justify-center transition-all duration-300 origin-center top-2 right-3 hover:rotate-90 hover:scale-110 active:scale-95 active:opacity-90 active:rotate-90 ease-bounce-end;
   }
   /** <- Header -> **/
   #header {
-    @apply w-full mt-6 mb-12 flex justify-center items-center;
+    @apply flex items-center justify-center w-full mt-6 mb-4;
   }
   #header h1 {
     font-family: "Roboto Slab", serif;
-    @apply font-medium text-8xl bg-gradient-to-r from-main-orange-base to-main-orange-light text-opacity-0 text-transparent bg-clip-text;
+    @apply font-medium text-transparent text-opacity-0 text-8xl bg-gradient-to-r from-main-orange-base to-main-orange-vibrant bg-clip-text;
   }
   #header img {
     @apply w-32;
   }
 
-  /** <- Main Question -> **/
+  /** <- Main Quiz -> **/
+  .quiz-div {
+    @apply w-full p-0;
+  }
+
+  .question-display {
+    @apply px-3 pt-5 text-5xl font-bold text-center bg-main-white-base;
+  }
+  .answer-div {
+    @apply flex flex-col items-center justify-center w-auto mx-10 my-3;
+  }
+
+  progress {
+    @apply rounded-full bg-main-orange-light w-[90%];
+  }
+  progress::-webkit-progress-bar {
+    @apply rounded-full bg-main-orange-light w-[90%];
+  }
+  progress::-webkit-progress-value {
+    background-image: repeating-linear-gradient(
+      45deg,
+      #ffbf18 2px,
+      #eeae0e 50px,
+      #eeae0e 70px,
+      #ffbf18 72px
+    );
+    @apply rounded-full;
+  }
+  progress::-moz-progress-bar {
+    background-image: repeating-linear-gradient(
+      45deg,
+      #ffbf18 2px,
+      #eeae0e 50px,
+      #eeae0e 70px,
+      #ffbf18 72px
+    );
+    @apply rounded-full;
+  }
+
+  .choices {
+    @apply grid w-full gap-2 p-2 mt-2 md:grid-rows-2 md:grid-cols-2;
+  }
+  .choice-elem {
+    @apply text-4xl bg-main-white-base transition-all hover:drop-shadow-main-darker ease-bounce-end hover:-mt-0.5 hover:mb-0.5 active:mt-0.5 active:-mb-0.5 active:ease-linear active:duration-75;
+  }
+
+  .quiz-header {
+    @apply absolute w-1/5 text-4xl font-bold text-center text-white -translate-x-1/2 bg-main-orange-vibrant -top-9 left-1/2 drop-shadow-sm;
+  }
 }

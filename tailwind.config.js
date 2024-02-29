@@ -13,12 +13,20 @@ export default {
       colors: {
         "main-orange": {
           base: "#BF7F1E",
-          light: "#FFBF18",
+          light: "#E8D4A4",
+          vibrant: "#FFBF18",
         },
         "main-white": {
           base: "#EEFAEE",
           dark: "#E6F0E6",
         },
+      },
+      dropShadow: {
+        "main-base": "0px 6px 7px rgba(0, 0, 0, 0.3)",
+        "main-darker": "0px 6px 9px rgba(0, 0, 0, 0.45)",
+      },
+      transitionTimingFunction: {
+        "bounce-end": "cubic-bezier(.16,.66,.42,1.3)",
       },
     },
   },
