@@ -21,6 +21,15 @@ export default {
           dark: "#E6F0E6",
         },
       },
+      keyframes: {
+        "fade-up": {
+          "0%": {transform: "translate(0,25px)", opacity: 0},
+          "100%": {transform: "translate(0,0)", opacity: 100},
+        },
+      },
+      animation: {
+        "fade-up": "fade-up 0.2s ease-out both",
+      },
       dropShadow: {
         "main-base": "0px 6px 7px rgba(0, 0, 0, 0.3)",
         "main-darker": "0px 6px 9px rgba(0, 0, 0, 0.45)",

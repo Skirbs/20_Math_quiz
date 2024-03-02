@@ -1,10 +1,13 @@
-import {useImperativeHandle} from "react";
+import {useContext, useImperativeHandle} from "react";
 import {useRef} from "react";
 import {forwardRef} from "react";
+import {createPortal} from "react-dom";
+import {MainContext} from "../store/MainContext";
 
 export default forwardRef(function SettingDialog(props, ref) {
   // const dialogRef = useRef()
-  return (
+  const mainCtx = useContext(MainContext);
+  return createPortal(
     <dialog className="card setting-dialog" ref={ref}>
       <h2 className="card">Settings</h2>
       <div className="setting-main">
@@ -62,9 +65,10 @@ export default forwardRef(function SettingDialog(props, ref) {
         <button className="border-2 drop-shadow-md border-main-orange-vibrant">Cancel</button>
         <button className="card bg-main-orange-vibrant">Confirm</button>
       </div>
-      <button className="close_dialog">
+      <button className="close_dialog" onClick={mainCtx.closeSettingHandler}>
         <span className="material-symbols-outlined">close</span>
       </button>
-    </dialog>
+    </dialog>,
+    document.querySelector("#dialog")
   );
 });
