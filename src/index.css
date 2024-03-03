@@ -30,6 +30,9 @@
   .card {
     @apply p-2 bg-main-white-dark rounded-xl drop-shadow-main-base;
   }
+  .bouncy-button {
+    @apply hover:-mt-[2px] hover:mb-[2px] active:-mb-[2px] active:mt-[2px] transition-all ease-bounce-end;
+  }
   .setting-button {
     @apply absolute flex items-center justify-center transition-all duration-300 origin-center top-2 right-3 hover:rotate-90 hover:scale-110 active:scale-95 active:opacity-90 active:rotate-90 ease-bounce-end;
   }
@@ -77,7 +80,7 @@
     @apply flex items-center justify-center flex-1;
   }
   .setting-action button {
-    @apply px-3 py-1 mx-1 rounded-full hover:-mt-0.5 hover:mb-0.5 transition-all ease-bounce-end;
+    @apply px-3 py-1 mx-1 rounded-full;
   }
 
   /** <- Header -> **/
@@ -140,5 +143,23 @@
 
   .quiz-header {
     @apply absolute w-1/5 text-4xl font-bold text-center text-white -translate-x-1/2 bg-main-orange-vibrant -top-9 left-1/2 drop-shadow-sm;
+  }
+
+  /** <- Finished Section -> **/
+
+  .congratulation-section {
+    @apply flex flex-col items-center w-full p-0;
+  }
+  .congratulation-section > h2 {
+    @apply w-full pt-12 pb-5 text-6xl font-bold text-center rounded-xl bg-main-white-base drop-shadow-main-base;
+  }
+  .congratulation-section > p {
+    @apply py-4 text-2xl text-center;
+  }
+  .congratulation-section > span {
+    @apply absolute w-[100px] text-white -translate-x-1/2 border-main-orange-vibrant border-4 rounded-full p-2 bg-gradient-to-b from-main-white-base to-main-white-dark -top-12 left-1/2 drop-shadow-xl;
+  }
+  .congratulation-section > .redo {
+    @apply m-auto mb-4 text-2xl transition-all duration-75 ease-out px-7 bg-main-white-base hover:scale-95 active:scale-90 active:opacity-70;
   }
 }

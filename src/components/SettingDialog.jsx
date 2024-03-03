@@ -63,9 +63,9 @@ export default forwardRef(function SettingDialog(props, ref) {
       <div className="setting-action">
         <h3>(Settings will be applied on the next attempt)</h3>
         <button className="border-2 drop-shadow-md border-main-orange-vibrant">Cancel</button>
-        <button className="card bg-main-orange-vibrant">Confirm</button>
+        <button className="card bouncy-button bg-main-orange-vibrant">Confirm</button>
       </div>
-      <button className="close_dialog" onClick={mainCtx.closeSettingHandler}>
+      <button className="close_dialog bouncy-button" onClick={mainCtx.closeSettingHandler}>
         <span className="material-symbols-outlined">close</span>
       </button>
     </dialog>,

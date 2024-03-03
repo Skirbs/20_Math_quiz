@@ -1,3 +1,4 @@
+import Finished from "./components/Finished";
 import Footer from "./components/Footer";
 import Header from "./components/Header";
 import Quiz from "./components/Quiz";
@@ -7,7 +8,8 @@ function App() {
     <div className="flex flex-col justify-start min-h-screen">
       <main>
         <Header />
-        <Quiz />
+        {/* <Quiz /> */}
+        <Finished />
       </main>
       <Footer />
     </div>
