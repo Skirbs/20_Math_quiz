@@ -152,7 +152,7 @@
 
   /* Congratulation Section */
   .congratulation-section {
-    @apply flex flex-col items-center w-11/12 p-0 animate-fade-up;
+    @apply flex flex-col items-center w-11/12 w-full p-0 animate-fade-up;
   }
   .congratulation-section > h2,
   .answer-report > h2 {
@@ -167,18 +167,18 @@
   .congratulation-section > .redo {
     @apply m-auto mb-4 text-2xl transition-all duration-75 ease-out px-7 bg-main-white-base hover:scale-95 active:scale-90 active:opacity-70;
   }
-  /* Answer Section */
+  /* Answer Report Section */
 
   .answer-report {
     animation-delay: 100ms !important;
-    @apply flex flex-col items-center w-full p-0 animate-fade-up;
+    @apply flex flex-col items-center w-11/12 p-0 animate-fade-up;
   }
   .answer-report > h2 {
     @apply !pt-5 text-5xl;
   }
 
   .data-div {
-    @apply flex items-center justify-center w-11/12 gap-6 m-2;
+    @apply flex items-center justify-center gap-6 m-2;
   }
   .data-elem {
     @apply flex flex-col items-center justify-center bg-main-white-base;
@@ -191,5 +191,53 @@
   }
   .data-elem p:last-of-type {
     @apply text-lg;
+  }
+
+  /* Report List Section */
+
+  .report-list {
+    animation-delay: 200ms !important;
+    @apply flex flex-col items-center w-full gap-4 animate-fade-up;
+  }
+
+  /* Report Elem */
+  .report-elem {
+    @apply grid grid-cols-[1fr_1fr_80px] grid-rows-2 gap-2 w-2/3 h-44;
+  }
+  .report-elem div {
+    @apply bg-main-white-base drop-shadow-lg;
+  }
+
+  .report-question {
+    @apply flex flex-col items-center justify-center col-span-2 row-start-1;
+  }
+  .report-question p:first-child {
+    @apply text-lg;
+  }
+  .report-question p:last-child {
+    @apply text-3xl font-bold;
+  }
+
+  .report-answer {
+    @apply flex flex-col items-center justify-center;
+  }
+  .report-answer p:first-child {
+    @apply text-base;
+  }
+  .report-answer p:last-child {
+    @apply text-2xl font-bold;
+  }
+  .user-answer {
+    @apply col-start-1 row-start-2;
+  }
+  .correct-answer {
+    @apply col-start-2 row-start-2;
+  }
+
+  .report-feedback {
+    @apply flex items-center justify-center col-start-3 row-span-2;
+  }
+  .report-feedback > img {
+    @apply w-full m-2 drop-shadow-xl;
   }
 }

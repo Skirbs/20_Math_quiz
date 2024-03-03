@@ -1,10 +1,16 @@
-import trophyImg from "../assets/trophy.svg";
 import SettingButton from "./SettingButton";
+
+import trophyImg from "../assets/trophy.svg";
+import correctImg from "../assets/correct.svg";
+import incorrectImg from "../assets/incorrect.svg";
+import missedImg from "../assets/missed.svg";
+
 export default function Finished() {
   return (
     <div className="finished-section">
       <Congratulation />
       <AnswerReports />
+      <ReportList />
     </div>
   );
 }
@@ -48,6 +54,51 @@ function AnswerReports() {
   );
 }
 
-function ReportList() {}
+function ReportList() {
+  return (
+    <div className="report-list">
+      <ReportElem answerState={"correct"} />
+      <ReportElem answerState={"incorrect"} />
+      <ReportElem answerState={"missed"} />
+    </div>
+  );
+}
 
-function ReportElem() {}
+function ReportElem({answerState}) {
+  let stateImg;
+
+  switch (answerState) {
+    case "correct":
+      stateImg = correctImg;
+      break;
+    case "incorrect":
+      stateImg = incorrectImg;
+      break;
+    case "missed":
+      stateImg = missedImg;
+      break;
+    default:
+      console.error("Answer State Does Not Exist");
+      break;
+  }
+
+  return (
+    <div className="card report-elem">
+      <div className="card report-question">
+        <p>Question</p>
+        <p>123+123</p>
+      </div>
+      <div className="card report-answer user-answer">
+        <p>Your Answer</p>
+        <p>1203</p>
+      </div>
+      <div className="card report-answer correct-answer">
+        <p>Correct Answer</p>
+        <p>1203</p>
+      </div>
+      <div className="card report-feedback">
+        <img src={stateImg} alt="correct" />
+      </div>
+    </div>
+  );
+}
