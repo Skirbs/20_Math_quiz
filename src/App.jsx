@@ -8,8 +8,8 @@ function App() {
     <div className="flex flex-col justify-start min-h-screen">
       <main>
         <Header />
-        {/* <Quiz /> */}
-        <Finished />
+        <Quiz />
+        {/* <Finished /> */}
       </main>
       <Footer />
     </div>

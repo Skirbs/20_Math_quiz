@@ -19,11 +19,12 @@ export default forwardRef(function SettingDialog(props, ref) {
           </div>
           <div className="setting-option">
             <label htmlFor="operation">Operation</label>
-            <select id="operation" className="w-[50px]">
+            <select id="operation" className="w-[75px]">
               <option value="+">+</option>
               <option value="-">-</option>
-              <option value="/">÷</option>
               <option value="x">×</option>
+              <option value="÷">÷</option>
+              <option value="mixed">mixed</option>
             </select>
           </div>
         </section>

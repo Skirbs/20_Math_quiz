@@ -85,6 +85,9 @@ function ReportElem({answerState}) {
   return (
     <div className="card report-elem">
       <div className="card report-question">
+        <p className="absolute top-1 left-4">
+          <span className="font-bold">Q</span>. 1
+        </p>
         <p>Question</p>
         <p>123+123</p>
       </div>
