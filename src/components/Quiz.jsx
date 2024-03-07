@@ -2,25 +2,51 @@
 // ? It then gives 4 choices. each are similar to eachother but only 1 is correct
 // ? However each question have a time limit.
 
-import {createContext, useContext, useEffect, useRef, useState} from "react";
+import {createContext, useCallback, useContext, useEffect, useRef, useState} from "react";
 import SettingButton from "./SettingButton";
 
-const quizContext = createContext({answerHandler: () => {}});
+const quizContext = createContext({
+  answerHandler: () => {},
+  setQuestionIndex: () => {},
+  setCurrentQuestion: () => {},
+});
 
 export default function Quiz() {
   const digitsPerTerm = useRef(parseInt(localStorage.getItem("digitsPerTerm")) || 2);
   const operation = useRef(localStorage.getItem("operation") || "mixed");
+  const duration = useRef(parseInt(localStorage.getItem("quizDuration")) || 10000);
 
   const [questionIndex, setQuestionIndex] = useState(1);
   const questionAnswers = useRef([]);
 
-  function answerHandler(question, userAnswer, correctAnswer) {
-    const questionAnswer = {question, userAnswer, correctAnswer};
+  // answerState can be the following: answering, pause, reveal
+  const [currentQuestion, setCurrentQuestion] = useState({
+    question: "",
+    correctAnswer: 0,
+    answerState: "answering",
+  });
+
+  const setCurrentQuestionHandler = useCallback(
+    (question, correctAnswer, answerState) => {
+      setCurrentQuestion({question, correctAnswer, answerState});
+    },
+    [setCurrentQuestion]
+  );
+
+  function answerHandler(userAnswer) {
+    const questionAnswer = {...currentQuestion, userAnswer};
     questionAnswers.current.unshift(questionAnswer);
     setQuestionIndex((prev) => prev + 1); // ! TEMPORARY
   }
 
-  const quizCtxValue = {answerHandler, setQuestionIndex};
+  const quizCtxValue = {
+    duration,
+    answerHandler,
+    questionIndex,
+    setQuestionIndex,
+    setCurrentQuestionHandler,
+    currentQuestion,
+  };
 
   return (
     <quizContext.Provider value={quizCtxValue}>
@@ -71,19 +97,19 @@ function Question({digitsPerTerm, operation}) {
       break;
   }
 
+  const questionFormat = `${first_number} ${operation} ${second_number}`;
   function onAnswer(userAnswer) {
-    quizCtx.answerHandler(
-      `${first_number} ${operation} ${second_number}`,
-      userAnswer,
-      correctAnswer
-    );
+    quizCtx.answerHandler(correctAnswer);
   }
+
+  useEffect(() => {
+    quizCtx.setCurrentQuestionHandler(questionFormat, correctAnswer, "answering");
+  }, [quizCtx.setCurrentQuestionHandler]);
+
   return (
     <>
       <div className="card question-display">
-        <h2>
-          {first_number} {operation} {second_number}
-        </h2>
+        <h2>{questionFormat}</h2>
         <SettingButton />
       </div>
 
@@ -93,21 +119,50 @@ function Question({digitsPerTerm, operation}) {
 }
 
 function AnswerDiv({correctAnswer, onAnswer}) {
+  const quizCtx = useContext(quizContext);
+
+  let timerDuration = quizCtx.duration.current;
+
+  if (quizCtx.currentQuestion.answerState === "pause") {
+    timerDuration = 1000;
+  } else if (quizCtx.currentQuestion.answerState === "reveal") {
+    timerDuration = 2000;
+  }
   return (
     <div className="answer-div">
-      <TimerProgress />
+      <TimerProgress duration={timerDuration} key={quizCtx.questionIndex} />
       <ChoicesList correctAnswer={correctAnswer} onAnswer={onAnswer} />
     </div>
   );
 }
 
-function TimerProgress() {
-  return <progress value={20} max={40} />;
+function TimerProgress({duration}) {
+  const quizCtx = useContext(quizContext);
+  const [timerValue, setTimerValue] = useState(duration);
+  useEffect(() => {
+    console.log(quizCtx.currentQuestion);
+    const timeout = setTimeout(() => {
+      quizCtx.answerHandler(NaN);
+    }, duration);
+    return () => clearTimeout(timeout);
+  }, [duration, quizCtx.currentQuestion]);
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setTimerValue((prev) => prev - 10);
+    }, 10);
+    return () => {
+      clearInterval(interval);
+    };
+  }, [setTimerValue]);
+  return <progress value={timerValue} max={duration} />;
 }
 
 function ChoicesList({correctAnswer, onAnswer}) {
   let answerOptions = [correctAnswer]; // These are the options that will be display. incorrect ones will soon be added
 
+  function answerHandler(userAnswer) {
+    onAnswer(userAnswer);
+  }
   // this for loop generates 3 altered answers
   for (let i = 0; i < 3; i++) {
     let alteredAnswer;
@@ -140,7 +195,15 @@ function ChoicesList({correctAnswer, onAnswer}) {
   return (
     <div className="choices">
       {answerOptions.map((value, i) => {
-        return <ChoiceElem onClick={() => onAnswer(value)} key={i} value={value} />;
+        return (
+          <ChoiceElem
+            onClick={() => {
+              answerHandler(value);
+            }}
+            key={i}
+            value={value}
+          />
+        );
       })}
     </div>
   );

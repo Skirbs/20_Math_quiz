@@ -108,10 +108,10 @@
   }
 
   progress {
-    @apply rounded-full bg-main-orange-light w-[90%];
+    @apply rounded-full bg-main-orange-light w-[85%];
   }
   progress::-webkit-progress-bar {
-    @apply rounded-full bg-main-orange-light w-[90%];
+    @apply rounded-full bg-main-orange-light;
   }
   progress::-webkit-progress-value {
     background-image: repeating-linear-gradient(
