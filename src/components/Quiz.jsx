@@ -2,6 +2,9 @@
 // ? It then gives 4 choices. each are similar to eachother but only 1 is correct
 // ? However each question have a time limit.
 
+const ANSWERPAUSEDELAY = 1000;
+const ANSWERREVEALDELAY = 2000;
+
 import {createContext, useCallback, useContext, useEffect, useRef, useState} from "react";
 import SettingButton from "./SettingButton";
 
@@ -16,8 +19,8 @@ export default function Quiz() {
   const operation = useRef(localStorage.getItem("operation") || "mixed");
   const duration = useRef(parseInt(localStorage.getItem("quizDuration")) || 10000);
 
-  const [questionIndex, setQuestionIndex] = useState(1);
-  const questionAnswers = useRef([]);
+  const [questionAnswers, setQuestionAnswers] = useState([]);
+  const questionIndex = questionAnswers.length + 1;
 
   // answerState can be the following: answering, pause, reveal
   const [currentQuestion, setCurrentQuestion] = useState({
@@ -26,32 +29,28 @@ export default function Quiz() {
     answerState: "answering",
   });
 
-  const setCurrentQuestionHandler = useCallback(
-    (question, correctAnswer, answerState) => {
-      setCurrentQuestion({question, correctAnswer, answerState});
-    },
-    [setCurrentQuestion]
-  );
-
   function answerHandler(userAnswer) {
     const questionAnswer = {...currentQuestion, userAnswer};
-    questionAnswers.current.unshift(questionAnswer);
-    setQuestionIndex((prev) => prev + 1); // ! TEMPORARY
+    setQuestionAnswers((prev) => [...prev, questionAnswer]);
   }
 
+  console.log(questionAnswers);
   const quizCtxValue = {
     duration,
     answerHandler,
     questionIndex,
-    setQuestionIndex,
-    setCurrentQuestionHandler,
+    setCurrentQuestion,
     currentQuestion,
   };
 
   return (
     <quizContext.Provider value={quizCtxValue}>
       <div className="card quiz-div">
-        <Question digitsPerTerm={digitsPerTerm.current} operation={operation.current} />
+        <Question
+          digitsPerTerm={digitsPerTerm.current}
+          operation={operation.current}
+          key={questionIndex}
+        />
         <QuizHeader questionIndex={questionIndex} />
       </div>
     </quizContext.Provider>
@@ -66,8 +65,8 @@ function Question({digitsPerTerm, operation}) {
   const max = parseInt("9".repeat(digitsPerTerm));
   const min = 1 * 10 ** (digitsPerTerm - 1);
 
-  let first_number = Math.floor(Math.random() * (max - min + 1) + min);
-  let second_number = Math.floor(Math.random() * (max - min + 1) + min);
+  let firstNumber = Math.floor(Math.random() * (max - min + 1) + min);
+  let secondNumber = Math.floor(Math.random() * (max - min + 1) + min);
 
   let correctAnswer;
 
@@ -81,39 +80,44 @@ function Question({digitsPerTerm, operation}) {
   // get the answer based on the question format
   switch (operation) {
     case "+":
-      correctAnswer = first_number + second_number;
+      correctAnswer = firstNumber + secondNumber;
       break;
     case "-":
-      correctAnswer = first_number - second_number;
+      correctAnswer = firstNumber - secondNumber;
       break;
     case "x":
-      correctAnswer = first_number * second_number;
+      correctAnswer = firstNumber * secondNumber;
       break;
     case "÷":
-      const multiplied_answer = first_number * second_number;
-      const original_answer = multiplied_answer / second_number;
-      first_number = multiplied_answer; // for display purposes
+      const multiplied_answer = firstNumber * secondNumber;
+      const original_answer = multiplied_answer / secondNumber;
+      firstNumber = multiplied_answer; // for display purposes
       correctAnswer = original_answer;
       break;
   }
 
-  const questionFormat = `${first_number} ${operation} ${second_number}`;
   function onAnswer(userAnswer) {
-    quizCtx.answerHandler(correctAnswer);
+    quizCtx.answerHandler(userAnswer);
   }
 
   useEffect(() => {
-    quizCtx.setCurrentQuestionHandler(questionFormat, correctAnswer, "answering");
-  }, [quizCtx.setCurrentQuestionHandler]);
+    const questionFormat = `${firstNumber} ${operation} ${secondNumber}`;
+
+    quizCtx.setCurrentQuestion({
+      question: questionFormat,
+      correctAnswer: correctAnswer,
+      answerState: "answering",
+    });
+  }, []);
 
   return (
     <>
       <div className="card question-display">
-        <h2>{questionFormat}</h2>
+        <h2>{quizCtx.currentQuestion.question}</h2>
         <SettingButton />
       </div>
 
-      <AnswerDiv correctAnswer={correctAnswer} onAnswer={onAnswer} />
+      <AnswerDiv onAnswer={onAnswer} />
     </>
   );
 }
@@ -122,16 +126,16 @@ function AnswerDiv({correctAnswer, onAnswer}) {
   const quizCtx = useContext(quizContext);
 
   let timerDuration = quizCtx.duration.current;
-
   if (quizCtx.currentQuestion.answerState === "pause") {
-    timerDuration = 1000;
+    timerDuration = ANSWERPAUSEDELAY;
   } else if (quizCtx.currentQuestion.answerState === "reveal") {
-    timerDuration = 2000;
+    timerDuration = ANSWERREVEALDELAY;
   }
+
   return (
     <div className="answer-div">
-      <TimerProgress duration={timerDuration} key={quizCtx.questionIndex} />
-      <ChoicesList correctAnswer={correctAnswer} onAnswer={onAnswer} />
+      <TimerProgress duration={timerDuration} key={quizCtx.currentQuestion} />
+      <ChoicesList onAnswer={onAnswer} />
     </div>
   );
 }
@@ -139,13 +143,18 @@ function AnswerDiv({correctAnswer, onAnswer}) {
 function TimerProgress({duration}) {
   const quizCtx = useContext(quizContext);
   const [timerValue, setTimerValue] = useState(duration);
+
   useEffect(() => {
-    console.log(quizCtx.currentQuestion);
+    setTimerValue(duration);
     const timeout = setTimeout(() => {
-      quizCtx.answerHandler(NaN);
+      if (quizCtx.currentQuestion.answerState === "answering") {
+        quizCtx.answerHandler(NaN);
+      }
     }, duration);
+
     return () => clearTimeout(timeout);
-  }, [duration, quizCtx.currentQuestion]);
+  }, [duration, quizCtx.currentQuestion.answer]);
+
   useEffect(() => {
     const interval = setInterval(() => {
       setTimerValue((prev) => prev - 10);
@@ -157,12 +166,30 @@ function TimerProgress({duration}) {
   return <progress value={timerValue} max={duration} />;
 }
 
-function ChoicesList({correctAnswer, onAnswer}) {
-  let answerOptions = [correctAnswer]; // These are the options that will be display. incorrect ones will soon be added
+function ChoicesList({onAnswer}) {
+  const quizCtx = useContext(quizContext);
+
+  let answerOptions = [quizCtx.currentQuestion.correctAnswer]; // These are the options that will be display. incorrect ones will soon be added
+
+  console.log(answerOptions);
 
   function answerHandler(userAnswer) {
-    onAnswer(userAnswer);
+    quizCtx.setCurrentQuestion((prev) => {
+      return {...prev, answerState: "pause"};
+    });
+    setTimeout(() => {
+      quizCtx.setCurrentQuestion((prev) => {
+        return {...prev, answerState: "reveal"};
+      });
+      setTimeout(() => {
+        quizCtx.setCurrentQuestion((prev) => {
+          return {...prev, answerState: "answering"};
+        });
+        quizCtx.answerHandler(userAnswer);
+      }, ANSWERREVEALDELAY);
+    }, ANSWERPAUSEDELAY);
   }
+
   // this for loop generates 3 altered answers
   for (let i = 0; i < 3; i++) {
     let alteredAnswer;
@@ -170,16 +197,16 @@ function ChoicesList({correctAnswer, onAnswer}) {
     // The while loop makes sure that and option cannot be repeated again
     while (true) {
       // if the digits of the correct answer is less than 4 (inc. 1000) then the gap between the options will be -10 to 10
-      if (Math.abs(correctAnswer) <= 1000) {
-        alteredAnswer = correctAnswer + Math.floor(Math.random() * (10 + 9) - 10);
+      if (Math.abs(answerOptions[0]) <= 1000) {
+        alteredAnswer = answerOptions[0] + Math.floor(Math.random() * (10 + 9) - 10);
       }
 
       // if the digits of the correct answer is higher than 4 (excl. 1000) then the gap between the options will be -10*[answerDigitsCount - 2] to 10*[answerDigitsCount - 2]
       else {
-        const answerDigitsCount = correctAnswer.toString().length;
+        const answerDigitsCount = answerOptions[0].toString().length;
         const alterDifference = 10 ** (answerDigitsCount - 2);
         alteredAnswer =
-          correctAnswer +
+          answerOptions[0] +
           Math.floor(Math.random() * (alterDifference + alterDifference - 1) - alterDifference);
       }
 
