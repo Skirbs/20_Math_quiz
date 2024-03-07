@@ -30,7 +30,11 @@ export default function Quiz() {
   });
 
   function answerHandler(userAnswer) {
-    const questionAnswer = {...currentQuestion, userAnswer};
+    const questionAnswer = {
+      question: currentQuestion.question,
+      correctAnswer: currentQuestion.correctAnswer,
+      userAnswer,
+    };
     setQuestionAnswers((prev) => [...prev, questionAnswer]);
   }
 
@@ -117,12 +121,12 @@ function Question({digitsPerTerm, operation}) {
         <SettingButton />
       </div>
 
-      <AnswerDiv onAnswer={onAnswer} />
+      <AnswerDiv />
     </>
   );
 }
 
-function AnswerDiv({correctAnswer, onAnswer}) {
+function AnswerDiv({correctAnswer}) {
   const quizCtx = useContext(quizContext);
 
   let timerDuration = quizCtx.duration.current;
@@ -135,7 +139,7 @@ function AnswerDiv({correctAnswer, onAnswer}) {
   return (
     <div className="answer-div">
       <TimerProgress duration={timerDuration} key={quizCtx.currentQuestion} />
-      <ChoicesList onAnswer={onAnswer} />
+      <ChoicesList />
     </div>
   );
 }
@@ -166,10 +170,10 @@ function TimerProgress({duration}) {
   return <progress value={timerValue} max={duration} />;
 }
 
-function ChoicesList({onAnswer}) {
+function ChoicesList({}) {
   const quizCtx = useContext(quizContext);
 
-  let answerOptions = [quizCtx.currentQuestion.correctAnswer]; // These are the options that will be display. incorrect ones will soon be added
+  let [answerOptions, setAnswerOptions] = useState([]); // These are the options that will be display. incorrect ones will soon be added
 
   console.log(answerOptions);
 
@@ -190,34 +194,42 @@ function ChoicesList({onAnswer}) {
     }, ANSWERPAUSEDELAY);
   }
 
-  // this for loop generates 3 altered answers
-  for (let i = 0; i < 3; i++) {
-    let alteredAnswer;
+  useEffect(() => {
+    if (quizCtx.currentQuestion.answerState != "answering") return;
 
-    // The while loop makes sure that and option cannot be repeated again
-    while (true) {
-      // if the digits of the correct answer is less than 4 (inc. 1000) then the gap between the options will be -10 to 10
-      if (Math.abs(answerOptions[0]) <= 1000) {
-        alteredAnswer = answerOptions[0] + Math.floor(Math.random() * (10 + 9) - 10);
-      }
+    const correctAnswer = quizCtx.currentQuestion.correctAnswer;
+    setAnswerOptions((prev) => [correctAnswer]);
 
-      // if the digits of the correct answer is higher than 4 (excl. 1000) then the gap between the options will be -10*[answerDigitsCount - 2] to 10*[answerDigitsCount - 2]
-      else {
-        const answerDigitsCount = answerOptions[0].toString().length;
-        const alterDifference = 10 ** (answerDigitsCount - 2);
-        alteredAnswer =
-          answerOptions[0] +
-          Math.floor(Math.random() * (alterDifference + alterDifference - 1) - alterDifference);
-      }
+    const newOptions = [correctAnswer]; // Adds the correct option first
+    // this for loop generates 3 altered answers
+    for (let i = 0; i < 3; i++) {
+      let alteredAnswer;
 
-      // this stops the break if the altered answer does not exist.
-      if (!answerOptions.includes(alteredAnswer)) {
-        break;
+      // The while loop makes sure that and option cannot be repeated again
+      while (true) {
+        // if the digits of the correct answer is less than 4 (inc. 1000) then the gap between the options will be -10 to 10
+        if (Math.abs(correctAnswer) <= 1000) {
+          alteredAnswer = correctAnswer + Math.floor(Math.random() * (10 + 9) - 10);
+        }
+
+        // if the digits of the correct answer is higher than 4 (excl. 1000) then the gap between the options will be -10*[answerDigitsCount - 2] to 10*[answerDigitsCount - 2]
+        else {
+          const answerDigitsCount = correctAnswer.toString().length;
+          const alterDifference = 10 ** (answerDigitsCount - 2);
+          alteredAnswer =
+            correctAnswer +
+            Math.floor(Math.random() * (alterDifference + alterDifference - 1) - alterDifference);
+        }
+
+        // this stops the break if the altered answer does not exist.
+        if (!newOptions.includes(alteredAnswer)) {
+          break;
+        }
       }
+      newOptions.push(alteredAnswer);
     }
-    answerOptions.push(alteredAnswer);
-  }
-  answerOptions.sort(() => Math.random() - 0.5); // randomly shuffle the options
+    setAnswerOptions(newOptions.sort(() => Math.random() - 0.5));
+  }, [setAnswerOptions, quizCtx.currentQuestion]);
 
   return (
     <div className="choices">
