@@ -119,22 +119,27 @@
   progress::-webkit-progress-value {
     background-image: repeating-linear-gradient(
       45deg,
-      #ffbf18 2px,
-      #eeae0e 50px,
-      #eeae0e 70px,
-      #ffbf18 72px
+      #ffbf18 0px,
+      #ffbf18 20px,
+      #f1b10d 30px,
+      #f1b10d 70px,
+      #ffbf18 80px,
+      #ffbf18 100px
     );
-    @apply rounded-full;
+
+    @apply rounded-full [&.timer-pause]:opacity-50 [&.timer-reveal]:opacity-80;
   }
   progress::-moz-progress-bar {
     background-image: repeating-linear-gradient(
       45deg,
-      #ffbf18 2px,
-      #eeae0e 50px,
-      #eeae0e 70px,
-      #ffbf18 72px
+      #ffbf18 0px,
+      #ffbf18 20px,
+      #f1b10d 30px,
+      #f1b10d 70px,
+      #ffbf18 80px,
+      #ffbf18 100px
     );
-    @apply rounded-full;
+    @apply rounded-full [&.timer-pause]:opacity-50 [&.timer-reveal]:opacity-80;
   }
 
   .choices {
@@ -143,7 +148,17 @@
   .choice-elem {
     @apply text-4xl bg-main-white-base transition-all hover:drop-shadow-main-darker ease-bounce-end hover:-mt-0.5 hover:mb-0.5 active:mt-0.5 active:-mb-0.5 active:ease-linear active:duration-75;
   }
-
+  .choice-elem:disabled {
+    @apply opacity-80 !m-0 hover:drop-shadow-main-base;
+  }
+  .pause {
+  }
+  .correct {
+    @apply bg-green-800 text-white !opacity-100 !drop-shadow-main-darker;
+  }
+  .incorrect {
+    @apply bg-red-800 text-white !opacity-100 !drop-shadow-main-darker;
+  }
   .quiz-header {
     @apply absolute w-1/5 text-4xl font-bold text-center text-white -translate-x-1/2 bg-main-orange-vibrant -top-9 left-1/2 drop-shadow-sm;
   }

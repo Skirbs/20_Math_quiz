@@ -17,7 +17,7 @@ const quizContext = createContext({
 export default function Quiz() {
   const digitsPerTerm = useRef(parseInt(localStorage.getItem("digitsPerTerm")) || 2);
   const operation = useRef(localStorage.getItem("operation") || "mixed");
-  const duration = useRef(parseInt(localStorage.getItem("quizDuration")) || 10000);
+  const duration = useRef(parseInt(localStorage.getItem("quizDuration")) || 100000);
 
   const [questionAnswers, setQuestionAnswers] = useState([]);
   const questionIndex = questionAnswers.length + 1;
@@ -26,6 +26,7 @@ export default function Quiz() {
   const [currentQuestion, setCurrentQuestion] = useState({
     question: "",
     correctAnswer: 0,
+    userAnswer: "",
     answerState: "answering",
   });
 
@@ -35,10 +36,10 @@ export default function Quiz() {
       correctAnswer: currentQuestion.correctAnswer,
       userAnswer,
     };
+
     setQuestionAnswers((prev) => [...prev, questionAnswer]);
   }
 
-  console.log(questionAnswers);
   const quizCtxValue = {
     duration,
     answerHandler,
@@ -167,7 +168,13 @@ function TimerProgress({duration}) {
       clearInterval(interval);
     };
   }, [setTimerValue]);
-  return <progress value={timerValue} max={duration} />;
+  return (
+    <progress
+      value={timerValue}
+      className={`timer-${quizCtx.currentQuestion.answerState}`}
+      max={duration}
+    />
+  );
 }
 
 function ChoicesList({}) {
@@ -179,8 +186,9 @@ function ChoicesList({}) {
 
   function answerHandler(userAnswer) {
     quizCtx.setCurrentQuestion((prev) => {
-      return {...prev, answerState: "pause"};
+      return {...prev, answerState: "pause", userAnswer};
     });
+
     setTimeout(() => {
       quizCtx.setCurrentQuestion((prev) => {
         return {...prev, answerState: "reveal"};
@@ -248,8 +256,29 @@ function ChoicesList({}) {
   );
 }
 function ChoiceElem({value, onClick}) {
+  const quizCtx = useContext(quizContext);
+  const currentQuestion = quizCtx.currentQuestion;
+  let choiceClass;
+
+  let buttonDisabled = currentQuestion.answerState != "answering";
+  if (quizCtx.currentQuestion.answerState === "pause") {
+    choiceClass = "paused";
+  }
+  if (currentQuestion.answerState === "reveal") {
+    console.log(currentQuestion);
+    console.log(value.toString());
+    if (value === currentQuestion.correctAnswer) {
+      choiceClass = "correct";
+    } else if (value === currentQuestion.userAnswer) {
+      choiceClass = "incorrect";
+    }
+  }
+
   return (
-    <button className="card choice-elem" onClick={onClick}>
+    <button
+      className={`card choice-elem ${choiceClass}`}
+      onClick={onClick}
+      disabled={buttonDisabled}>
       {value}
     </button>
   );
