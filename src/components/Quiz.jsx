@@ -2,22 +2,28 @@
 // ? It then gives 4 choices. each are similar to eachother but only 1 is correct
 // ? However each question have a time limit.
 
-const ANSWERPAUSEDELAY = 1000;
-const ANSWERREVEALDELAY = 2000;
+const MAXQUESTIONS = 1;
 
-import {createContext, useCallback, useContext, useEffect, useRef, useState} from "react";
+// Time Variables in Milliseconds
+const ANSWERPAUSEDELAY = 600;
+const ANSWERREVEALDELAY = 1500;
+
+import {createContext, useContext, useEffect, useRef, useState} from "react";
 import SettingButton from "./SettingButton";
 
 const quizContext = createContext({
+  duration: 0,
   answerHandler: () => {},
   setQuestionIndex: () => {},
+  questionIndex: 0,
   setCurrentQuestion: () => {},
+  currentQuestion: undefined, // state
 });
 
-export default function Quiz() {
+export default function Quiz({onQuizFinish}) {
   const digitsPerTerm = useRef(parseInt(localStorage.getItem("digitsPerTerm")) || 2);
   const operation = useRef(localStorage.getItem("operation") || "mixed");
-  const duration = useRef(parseInt(localStorage.getItem("quizDuration")) || 100000);
+  const duration = useRef(parseInt(localStorage.getItem("quizDuration")) || 10000);
 
   const [questionAnswers, setQuestionAnswers] = useState([]);
   const questionIndex = questionAnswers.length + 1;
@@ -28,6 +34,14 @@ export default function Quiz() {
     correctAnswer: 0,
     userAnswer: "",
     answerState: "answering",
+  });
+
+  // if it has reached the maximum amount of question
+  useEffect(() => {
+    if (questionAnswers.length === MAXQUESTIONS) {
+      onQuizFinish(questionAnswers);
+      return;
+    }
   });
 
   function answerHandler(userAnswer) {
@@ -101,10 +115,6 @@ function Question({digitsPerTerm, operation}) {
       break;
   }
 
-  function onAnswer(userAnswer) {
-    quizCtx.answerHandler(userAnswer);
-  }
-
   useEffect(() => {
     const questionFormat = `${firstNumber} ${operation} ${secondNumber}`;
 
@@ -127,7 +137,7 @@ function Question({digitsPerTerm, operation}) {
   );
 }
 
-function AnswerDiv({correctAnswer}) {
+function AnswerDiv() {
   const quizCtx = useContext(quizContext);
 
   let timerDuration = quizCtx.duration.current;
@@ -181,8 +191,6 @@ function ChoicesList({}) {
   const quizCtx = useContext(quizContext);
 
   let [answerOptions, setAnswerOptions] = useState([]); // These are the options that will be display. incorrect ones will soon be added
-
-  console.log(answerOptions);
 
   function answerHandler(userAnswer) {
     quizCtx.setCurrentQuestion((prev) => {
@@ -265,8 +273,6 @@ function ChoiceElem({value, onClick}) {
     choiceClass = "paused";
   }
   if (currentQuestion.answerState === "reveal") {
-    console.log(currentQuestion);
-    console.log(value.toString());
     if (value === currentQuestion.correctAnswer) {
       choiceClass = "correct";
     } else if (value === currentQuestion.userAnswer) {
