@@ -18,82 +18,15 @@ const quizContext = createContext({
   currentQuestion: undefined, // state
 });
 
-export default function Quiz({onQuizFinish, maxQuestions}) {
-  const digitsPerTerm = useRef(parseInt(localStorage.getItem("digitsPerTerm")) || 2);
-  const operation = useRef(localStorage.getItem("operation") || "mixed");
-  const duration = useRef(parseInt(localStorage.getItem("quizDuration")) || 10000);
-
-  const [questionAnswers, setQuestionAnswers] = useState([]);
-  const questionIndex = questionAnswers.length + 1;
-
-  // answerState can be the following: answering, pause, reveal
-  const [currentQuestion, setCurrentQuestion] = useState({
-    question: "",
-    correctAnswer: 0,
-    userAnswer: 0,
-    answerState: "answering",
-
-    // "missed" by default but it can also be "correct" / "incorrect" depending on the answer. used for displaying answer reports
-    answerReport: "missed",
-  });
-
-  // if it has reached the maximum amount of question
-  useEffect(() => {
-    if (questionAnswers.length === maxQuestions) {
-      onQuizFinish(questionAnswers);
-      return;
-    }
-  });
-
-  function answerHandler(userAnswer) {
-    let answerReport;
-    if (isNaN(userAnswer)) {
-      answerReport = "missed";
-    } else {
-      answerReport = userAnswer === currentQuestion.correctAnswer ? "correct" : "incorrect";
-    }
-    console.log(answerReport);
-    const questionAnswer = {
-      question: currentQuestion.question,
-      correctAnswer: currentQuestion.correctAnswer,
-      userAnswer,
-      answerReport,
-    };
-    setQuestionAnswers((prev) => [...prev, questionAnswer]);
-  }
-
-  const quizCtxValue = {
-    duration,
-    answerHandler,
-    questionIndex,
-    setCurrentQuestion,
-    currentQuestion,
-  };
-
-  return (
-    <quizContext.Provider value={quizCtxValue}>
-      <div className="card quiz-div">
-        <Question
-          digitsPerTerm={digitsPerTerm.current}
-          operation={operation.current}
-          key={questionIndex}
-        />
-        <QuizHeader questionIndex={questionIndex} />
-      </div>
-    </quizContext.Provider>
-  );
-}
-
-// * <- Main Components -> * //
-
-function Question({digitsPerTerm, operation}) {
-  const quizCtx = useContext(quizContext);
-
+function generateMathProblem(digitsPerTerm, operation) {
   const max = parseInt("9".repeat(digitsPerTerm));
   const min = 1 * 10 ** (digitsPerTerm - 1);
 
   let firstNumber = Math.floor(Math.random() * (max - min + 1) + min);
   let secondNumber = Math.floor(Math.random() * (max - min + 1) + min);
+
+  console.log(firstNumber);
+  console.log(secondNumber);
 
   let correctAnswer;
 
@@ -122,16 +55,85 @@ function Question({digitsPerTerm, operation}) {
       correctAnswer = original_answer;
       break;
   }
+  const questionFormat = `${firstNumber} ${operation} ${secondNumber}`;
 
+  return {
+    question: questionFormat,
+    correctAnswer: correctAnswer,
+    answerState: "answering",
+  };
+}
+
+export default function Quiz({onQuizFinish, maxQuestions}) {
+  const digitsPerTerm = useRef(parseInt(localStorage.getItem("digitsPerTerm")) || 2);
+  const operation = useRef(localStorage.getItem("operation") || "mixed");
+  const duration = useRef(parseInt(localStorage.getItem("quizDuration")) || 1000);
+
+  const [questionAnswers, setQuestionAnswers] = useState([]);
+  const questionIndex = questionAnswers.length + 1;
+
+  // answerState can be the following: answering, pause, reveal
+  const [currentQuestion, setCurrentQuestion] = useState({
+    ...generateMathProblem(digitsPerTerm.current, operation.current),
+    userAnswer: 0,
+    // "missed" by default but it can also be "correct" / "incorrect" depending on the answer. used for displaying answer reports
+    answerReport: "missed",
+  });
+
+  // if it has reached the maximum amount of question
   useEffect(() => {
-    const questionFormat = `${firstNumber} ${operation} ${secondNumber}`;
+    if (questionAnswers.length === maxQuestions) {
+      onQuizFinish(questionAnswers);
+      return;
+    }
+  });
 
-    quizCtx.setCurrentQuestion({
-      question: questionFormat,
-      correctAnswer: correctAnswer,
-      answerState: "answering",
+  function answerHandler(userAnswer) {
+    let answerReport;
+    if (isNaN(userAnswer)) {
+      answerReport = "missed";
+    } else {
+      answerReport = userAnswer === currentQuestion.correctAnswer ? "correct" : "incorrect";
+    }
+    console.log(answerReport);
+    const questionAnswer = {
+      question: currentQuestion.question,
+      correctAnswer: currentQuestion.correctAnswer,
+      userAnswer,
+      answerReport,
+    };
+    setQuestionAnswers((prev) => [...prev, questionAnswer]);
+    setCurrentQuestion((prev) => {
+      return {...prev, ...generateMathProblem(digitsPerTerm.current, operation.current)};
     });
-  }, []);
+  }
+
+  const quizCtxValue = {
+    duration,
+    answerHandler,
+    questionIndex,
+    setCurrentQuestion,
+    currentQuestion,
+  };
+
+  return (
+    <quizContext.Provider value={quizCtxValue}>
+      <div className="card quiz-div">
+        <Question
+          digitsPerTerm={digitsPerTerm.current}
+          operation={operation.current}
+          key={questionIndex}
+        />
+        <QuizHeader questionIndex={questionIndex} />
+      </div>
+    </quizContext.Provider>
+  );
+}
+
+// * <- Main Components -> * //
+
+function Question({}) {
+  const quizCtx = useContext(quizContext);
 
   return (
     <>
@@ -171,6 +173,7 @@ function TimerProgress({duration}) {
     setTimerValue(duration);
     const timeout = setTimeout(() => {
       if (quizCtx.currentQuestion.answerState === "answering") {
+        console.log(quizCtx.currentQuestion);
         quizCtx.answerHandler(NaN);
       }
     }, duration);

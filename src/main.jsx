@@ -5,9 +5,7 @@ import "./index.css";
 import MainContextComponent from "./store/MainContext.jsx";
 
 ReactDOM.createRoot(document.getElementById("root")).render(
-  <React.StrictMode>
-    <MainContextComponent>
-      <App />
-    </MainContextComponent>
-  </React.StrictMode>
+  <MainContextComponent>
+    <App />
+  </MainContextComponent>
 );
