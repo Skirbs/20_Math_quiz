@@ -5,12 +5,12 @@ import correctImg from "../assets/correct.svg";
 import incorrectImg from "../assets/incorrect.svg";
 import missedImg from "../assets/missed.svg";
 
-export default function Finished() {
+export default function Finished({questionReport}) {
   return (
     <div className="finished-section">
       <Congratulation />
-      <AnswerReports />
-      <ReportList />
+      <AnswerReports questionReport={questionReport} />
+      <ReportList questionReport={questionReport} />
     </div>
   );
 }
@@ -29,45 +29,62 @@ function Congratulation() {
   );
 }
 
-function AnswerReports() {
+function AnswerReports({questionReport}) {
+  console.log(questionReport);
+  const correctCount = questionReport.filter((elem) => elem.answerReport === "correct").length;
+  const correctPercentage = Math.round((correctCount / questionReport.length) * 100);
+
+  const incorrectCount = questionReport.filter((elem) => elem.answerReport === "incorrect").length;
+  const incorrectPercentage = Math.round((incorrectCount / questionReport.length) * 100);
+
+  const missedCount = questionReport.length - (correctCount + incorrectCount);
+  const missedPercentage = 100 - (correctPercentage + incorrectPercentage);
+
   return (
     <div className="card answer-report">
       <h2>Answer Report</h2>
       <div className="data-div">
         <div className="card data-elem">
           <h3>Correct</h3>
-          <p>15/20</p>
-          <p>50%</p>
+          <p>
+            {correctCount}/{questionReport.length}
+          </p>
+          <p>{correctPercentage}%</p>
         </div>
         <div className="card data-elem">
-          <h3>Correct</h3>
-          <p>15/20</p>
-          <p>50%</p>
+          <h3>Incorrect</h3>
+          <p>
+            {incorrectCount}/{questionReport.length}
+          </p>
+          <p>{incorrectPercentage}%</p>
         </div>
         <div className="card data-elem">
-          <h3>Correct</h3>
-          <p>15/20</p>
-          <p>50%</p>
+          <h3>Missed</h3>
+          <p>
+            {missedCount}/{questionReport.length}
+          </p>
+          <p>{missedPercentage}%</p>
         </div>
       </div>
     </div>
   );
 }
 
-function ReportList() {
+function ReportList({questionReport}) {
+  console.log(questionReport);
   return (
     <div className="report-list">
-      <ReportElem answerState={"correct"} />
-      <ReportElem answerState={"incorrect"} />
-      <ReportElem answerState={"missed"} />
+      {questionReport.map((elem, i) => (
+        <ReportElem report={elem} key={i} index={i + 1} />
+      ))}
     </div>
   );
 }
 
-function ReportElem({answerState}) {
+function ReportElem({report, index}) {
   let stateImg;
 
-  switch (answerState) {
+  switch (report.answerReport) {
     case "correct":
       stateImg = correctImg;
       break;
@@ -86,18 +103,18 @@ function ReportElem({answerState}) {
     <div className="card report-elem">
       <div className="card report-question">
         <p className="absolute top-1 left-4">
-          <span className="font-bold">Q</span>. 1
+          <span className="font-bold">Q</span>. {index}
         </p>
         <p>Question</p>
-        <p>123+123</p>
+        <p>{report.question}</p>
       </div>
       <div className="card report-answer user-answer">
         <p>Your Answer</p>
-        <p>1203</p>
+        <p>{isNaN(report.userAnswer) ? "N/A" : report.userAnswer}</p>
       </div>
       <div className="card report-answer correct-answer">
         <p>Correct Answer</p>
-        <p>1203</p>
+        <p>{report.correctAnswer}</p>
       </div>
       <div className="card report-feedback">
         <img src={stateImg} alt="correct" />

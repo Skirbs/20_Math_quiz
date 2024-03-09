@@ -2,8 +2,6 @@
 // ? It then gives 4 choices. each are similar to eachother but only 1 is correct
 // ? However each question have a time limit.
 
-const MAXQUESTIONS = 1;
-
 // Time Variables in Milliseconds
 const ANSWERPAUSEDELAY = 600;
 const ANSWERREVEALDELAY = 1500;
@@ -20,7 +18,7 @@ const quizContext = createContext({
   currentQuestion: undefined, // state
 });
 
-export default function Quiz({onQuizFinish}) {
+export default function Quiz({onQuizFinish, maxQuestions}) {
   const digitsPerTerm = useRef(parseInt(localStorage.getItem("digitsPerTerm")) || 2);
   const operation = useRef(localStorage.getItem("operation") || "mixed");
   const duration = useRef(parseInt(localStorage.getItem("quizDuration")) || 10000);
@@ -32,25 +30,35 @@ export default function Quiz({onQuizFinish}) {
   const [currentQuestion, setCurrentQuestion] = useState({
     question: "",
     correctAnswer: 0,
-    userAnswer: "",
+    userAnswer: 0,
     answerState: "answering",
+
+    // "missed" by default but it can also be "correct" / "incorrect" depending on the answer. used for displaying answer reports
+    answerReport: "missed",
   });
 
   // if it has reached the maximum amount of question
   useEffect(() => {
-    if (questionAnswers.length === MAXQUESTIONS) {
+    if (questionAnswers.length === maxQuestions) {
       onQuizFinish(questionAnswers);
       return;
     }
   });
 
   function answerHandler(userAnswer) {
+    let answerReport;
+    if (isNaN(userAnswer)) {
+      answerReport = "missed";
+    } else {
+      answerReport = userAnswer === currentQuestion.correctAnswer ? "correct" : "incorrect";
+    }
+    console.log(answerReport);
     const questionAnswer = {
       question: currentQuestion.question,
       correctAnswer: currentQuestion.correctAnswer,
       userAnswer,
+      answerReport,
     };
-
     setQuestionAnswers((prev) => [...prev, questionAnswer]);
   }
 
