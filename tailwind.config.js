@@ -26,6 +26,10 @@ export default {
           "0%": {transform: "translate(0,25px)", opacity: 0},
           "100%": {transform: "translate(0,0)", opacity: 100},
         },
+        "fade-out-up": {
+          "0%": {transform: "translate(0,0)", opacity: 100},
+          "100%": {transform: "translate(0,-25px)", opacity: 0},
+        },
         "timer-bg-anim": {
           "0%": {backgroundColor: "#BF7F1E !important"},
           "100%": {backgroundColor: "#FFBF18 !important"},
@@ -33,6 +37,8 @@ export default {
       },
       animation: {
         "fade-up": "fade-up 0.2s ease-out both",
+        "fade-out-up": "fade-out-up 0.2s ease-in both",
+
         "timer-bg-anim": "fade-up 0.2s ease-out both",
       },
       dropShadow: {

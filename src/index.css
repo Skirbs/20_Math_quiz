@@ -66,12 +66,7 @@
   .setting-option > label {
     @apply text-lg font-medium;
   }
-  .setting-option input {
-    @apply drop-shadow-md;
-  }
-  .setting-option input[type="number"] {
-    @apply px-2 text-lg font-semibold border-2 rounded-full outline-none border-main-orange-vibrant bg-main-white-base;
-  }
+
   .setting-option select {
     @apply px-2 text-lg font-medium rounded-full bg-main-orange-vibrant outline-main-orange-base;
   }
@@ -100,7 +95,7 @@
 
   /** <- Main Quiz -> **/
   .quiz-div {
-    @apply w-full p-0;
+    @apply w-full p-0 animate-fade-up;
   }
 
   .question-display {
@@ -168,6 +163,10 @@
     @apply flex flex-col items-center w-full gap-2;
   }
 
+  .finished-section.finished {
+    @apply !animate-fade-out-up;
+  }
+
   /* Congratulation Section */
   .congratulation-section {
     @apply flex flex-col items-center w-full p-0 animate-fade-up;
@@ -183,7 +182,10 @@
     @apply absolute w-[100px] text-white -translate-x-1/2 border-main-orange-vibrant border-4 rounded-full p-2 bg-gradient-to-b from-main-white-base to-main-white-dark -top-12 left-1/2 drop-shadow-xl;
   }
   .congratulation-section > .redo {
-    @apply m-auto mb-4 text-2xl transition-all duration-75 ease-out px-7 bg-main-white-base hover:scale-95 active:scale-90 active:opacity-70;
+    @apply m-auto mb-4 text-2xl transition-all duration-75 ease-out px-7 bg-main-white-base hover:scale-95 active:scale-90 active:opacity-70 [&[disabled]]:hover:scale-100;
+  }
+  .congratulation-section > .redo[disabled] {
+    @apply !scale-100 !opacity-80;
   }
   /* Answer Report Section */
 

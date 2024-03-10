@@ -4,23 +4,39 @@ import trophyImg from "../assets/trophy.svg";
 import correctImg from "../assets/correct.svg";
 import incorrectImg from "../assets/incorrect.svg";
 import missedImg from "../assets/missed.svg";
+import {useRef} from "react";
 
-export default function Finished({questionReport}) {
+export default function Finished({questionReport, onQuizRestart}) {
+  const finishedRef = useRef();
+  function quizRestartHandler() {
+    finishedRef.current.classList.add("finished");
+    setTimeout(() => {
+      onQuizRestart();
+    }, 600);
+  }
   return (
-    <div className="finished-section">
-      <Congratulation />
+    <div ref={finishedRef} className="finished-section">
+      <Congratulation onQuizRestart={quizRestartHandler} />
       <AnswerReports questionReport={questionReport} />
       <ReportList questionReport={questionReport} />
     </div>
   );
 }
 
-function Congratulation() {
+function Congratulation({onQuizRestart}) {
+  const redoRef = useRef();
+  function redoClick() {
+    redoRef.current.disabled = true;
+    onQuizRestart();
+  }
   return (
     <div className="card congratulation-section">
       <h2>Congratulations!</h2>
       <p>You have successfully finished the quiz! </p>
-      <button className="card redo">Redo Quiz</button> {/* Place this inside Answer Reports */}
+      <button className="card redo" onClick={redoClick} ref={redoRef}>
+        Redo Quiz
+      </button>{" "}
+      {/* Place this inside Answer Reports */}
       <SettingButton />
       <span>
         <img className="w-full" src={trophyImg} alt="trophy image" />
@@ -30,7 +46,6 @@ function Congratulation() {
 }
 
 function AnswerReports({questionReport}) {
-  console.log(questionReport);
   const correctCount = questionReport.filter((elem) => elem.answerReport === "correct").length;
   const correctPercentage = Math.round((correctCount / questionReport.length) * 100);
 
@@ -71,7 +86,6 @@ function AnswerReports({questionReport}) {
 }
 
 function ReportList({questionReport}) {
-  console.log(questionReport);
   return (
     <div className="report-list">
       {questionReport.map((elem, i) => (

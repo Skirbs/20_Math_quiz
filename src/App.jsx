@@ -4,7 +4,7 @@ import Footer from "./components/Footer";
 import Header from "./components/Header";
 import Quiz from "./components/Quiz";
 
-const MAXQUESTIONS = 5;
+const MAXQUESTIONS = 20;
 
 function App() {
   const [displayState, setDisplayState] = useState("quiz"); // State Can Either Be "quiz" Or "finished"
@@ -12,6 +12,9 @@ function App() {
   function quizFinishedHandler(questionAnswers) {
     questionReport.current = questionAnswers;
     setDisplayState("finished");
+  }
+  function quizRestartHandler() {
+    setDisplayState("quiz");
   }
 
   return (
@@ -21,7 +24,9 @@ function App() {
         {displayState === "quiz" && (
           <Quiz onQuizFinish={quizFinishedHandler} maxQuestions={MAXQUESTIONS} />
         )}
-        {displayState === "finished" && <Finished questionReport={questionReport.current} />}
+        {displayState === "finished" && (
+          <Finished questionReport={questionReport.current} onQuizRestart={quizRestartHandler} />
+        )}
       </main>
       <Footer />
     </div>

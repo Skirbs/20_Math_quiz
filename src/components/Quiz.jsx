@@ -25,9 +25,6 @@ function generateMathProblem(digitsPerTerm, operation) {
   let firstNumber = Math.floor(Math.random() * (max - min + 1) + min);
   let secondNumber = Math.floor(Math.random() * (max - min + 1) + min);
 
-  console.log(firstNumber);
-  console.log(secondNumber);
-
   let correctAnswer;
 
   // if the operation is mixed (because of the settings)
@@ -67,7 +64,7 @@ function generateMathProblem(digitsPerTerm, operation) {
 export default function Quiz({onQuizFinish, maxQuestions}) {
   const digitsPerTerm = useRef(parseInt(localStorage.getItem("digitsPerTerm")) || 2);
   const operation = useRef(localStorage.getItem("operation") || "mixed");
-  const duration = useRef(parseInt(localStorage.getItem("quizDuration")) || 1000);
+  const duration = useRef(parseInt(localStorage.getItem("quizDuration")) || 10000);
 
   const [questionAnswers, setQuestionAnswers] = useState([]);
   const questionIndex = questionAnswers.length + 1;
@@ -95,7 +92,6 @@ export default function Quiz({onQuizFinish, maxQuestions}) {
     } else {
       answerReport = userAnswer === currentQuestion.correctAnswer ? "correct" : "incorrect";
     }
-    console.log(answerReport);
     const questionAnswer = {
       question: currentQuestion.question,
       correctAnswer: currentQuestion.correctAnswer,
@@ -173,7 +169,6 @@ function TimerProgress({duration}) {
     setTimerValue(duration);
     const timeout = setTimeout(() => {
       if (quizCtx.currentQuestion.answerState === "answering") {
-        console.log(quizCtx.currentQuestion);
         quizCtx.answerHandler(NaN);
       }
     }, duration);
