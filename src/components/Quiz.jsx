@@ -64,6 +64,7 @@ function generateMathProblem(digitsPerTerm, operation) {
 export default function Quiz({onQuizFinish, maxQuestions}) {
   const digitsPerTerm = useRef(parseInt(localStorage.getItem("digitsPerTerm")) || 2);
   const operation = useRef(localStorage.getItem("operation") || "mixed");
+  const enabledTimer = useRef(localStorage.getItem("enabledTimer") || "true");
   const duration = useRef(parseInt(localStorage.getItem("quizDuration")) || 10000);
 
   const [questionAnswers, setQuestionAnswers] = useState([]);
@@ -105,6 +106,7 @@ export default function Quiz({onQuizFinish, maxQuestions}) {
   }
 
   const quizCtxValue = {
+    enabledTimer,
     duration,
     answerHandler,
     questionIndex,
@@ -164,6 +166,8 @@ function AnswerDiv() {
 function TimerProgress({duration}) {
   const quizCtx = useContext(quizContext);
   const [timerValue, setTimerValue] = useState(duration);
+
+  if (quizCtx.enabledTimer.current === "false") return;
 
   useEffect(() => {
     setTimerValue(duration);

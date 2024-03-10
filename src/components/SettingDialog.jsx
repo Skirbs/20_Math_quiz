@@ -17,12 +17,16 @@ export default forwardRef(function SettingDialog(props, ref) {
     digitsRef.current.value = localStorage.getItem("digitsPerTerm") || 2;
     operationRef.current.value = localStorage.getItem("operation") || "mixed";
     durationRef.current.value = localStorage.getItem("quizDuration") || 10000;
+    enabledSettingsRef.current.checked =
+      (localStorage.getItem("enabledTimer") || "true") === "true" ? true : false;
   }, []);
 
   function saveSettings() {
     localStorage.setItem("digitsPerTerm", digitsRef.current.value);
     localStorage.setItem("operation", operationRef.current.value);
     localStorage.setItem("quizDuration", durationRef.current.value);
+    localStorage.setItem("enabledTimer", enabledSettingsRef.current.checked);
+
     mainCtx.closeSettingHandler();
   }
   return createPortal(
