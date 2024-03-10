@@ -23,6 +23,21 @@
     background-image: url("assets/background.png");
     @apply fixed inset-0 bg-top bg-no-repeat bg-cover -z-50;
   }
+
+  body::-webkit-scrollbar {
+    width: 10px;
+  }
+  body::-webkit-scrollbar-track {
+    background-color: #083a02;
+  }
+
+  body::-webkit-scrollbar-thumb {
+    background: #052701;
+  }
+
+  body::-webkit-scrollbar-thumb:hover {
+    background: #031b00;
+  }
 }
 
 @layer components {
@@ -50,6 +65,24 @@
   .setting-dialog h2 {
     @apply w-full px-2 py-3 text-4xl font-bold text-center bg-main-white-base;
   }
+
+  .setting-dialog::-webkit-scrollbar,
+  .setting-dialog *::-webkit-scrollbar {
+    width: 6px;
+  }
+  .setting-dialog::-webkit-scrollbar-track,
+  .setting-dialog *::-webkit-scrollbar-track {
+    background-color: #e6f0e6;
+  }
+  .setting-dialog::-webkit-scrollbar-thumb,
+  .setting-dialog *::-webkit-scrollbar-thumb {
+    background: #b0b4b0;
+  }
+  .setting-dialog::-webkit-scrollbar-thumb:hover,
+  .setting-dialog *::-webkit-scrollbar-thumb:hover {
+    background: rgb(157, 160, 157);
+  }
+
   .setting-main {
     @apply relative top-0 bottom-0 px-10 py-4 overflow-auto;
   }

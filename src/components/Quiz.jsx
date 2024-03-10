@@ -165,16 +165,25 @@ function AnswerDiv() {
 
 function TimerProgress({duration}) {
   const quizCtx = useContext(quizContext);
+  const timesUp = useRef(false);
   const [timerValue, setTimerValue] = useState(duration);
-
   if (quizCtx.enabledTimer.current === "false") return;
 
   useEffect(() => {
-    setTimerValue(duration);
-    const timeout = setTimeout(() => {
+    if (timerValue <= 0 && timesUp.current) {
       if (quizCtx.currentQuestion.answerState === "answering") {
         quizCtx.answerHandler(NaN);
       }
+      timesUp.current = false;
+      return;
+    }
+  });
+
+  useEffect(() => {
+    setTimerValue(duration);
+
+    const timeout = setTimeout(() => {
+      timesUp.current = true;
     }, duration);
 
     return () => clearTimeout(timeout);
@@ -188,6 +197,7 @@ function TimerProgress({duration}) {
       clearInterval(interval);
     };
   }, [setTimerValue]);
+
   return (
     <progress
       value={timerValue}
