@@ -11,10 +11,10 @@ After answering all questions it gives a report based on how you did!
 ## Custom Questions
 
 Do you want to increase the difficulty of the questions? or maybe tone it down a bit? Dont worry because you can change the way how these questions work!
+
 ![setting_gif](./public/settings.gif)
 
 These includes
-
 - Digits per terms
 - Operation used
 - Enable Timer
