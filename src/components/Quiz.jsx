@@ -3,8 +3,8 @@
 // ? However each question have a time limit.
 
 // Time Variables in Milliseconds
-const ANSWERPAUSEDELAY = 600;
-const ANSWERREVEALDELAY = 1500;
+const ANSWERPAUSEDELAY = 400;
+const ANSWERREVEALDELAY = 1000;
 
 import {createContext, useContext, useEffect, useRef, useState} from "react";
 import SettingButton from "./SettingButton";
@@ -63,7 +63,7 @@ function generateMathProblem(digitsPerTerm, operation) {
 
 export default function Quiz({onQuizFinish, maxQuestions}) {
   const digitsPerTerm = useRef(parseInt(localStorage.getItem("digitsPerTerm")) || 2);
-  const operation = useRef(localStorage.getItem("operation") || "mixed");
+  const operation = useRef(localStorage.getItem("operation") || "+");
   const enabledTimer = useRef(localStorage.getItem("enabledTimer") || "true");
   const duration = useRef(parseInt(localStorage.getItem("quizDuration")) || 10000);
 

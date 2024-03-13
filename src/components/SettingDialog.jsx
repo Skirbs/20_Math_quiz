@@ -15,7 +15,7 @@ export default forwardRef(function SettingDialog(props, ref) {
 
   useEffect(() => {
     digitsRef.current.value = localStorage.getItem("digitsPerTerm") || 2;
-    operationRef.current.value = localStorage.getItem("operation") || "mixed";
+    operationRef.current.value = localStorage.getItem("operation") || "+";
     durationRef.current.value = localStorage.getItem("quizDuration") || 10000;
     enabledSettingsRef.current.checked =
       (localStorage.getItem("enabledTimer") || "true") === "true" ? true : false;
@@ -49,7 +49,7 @@ export default forwardRef(function SettingDialog(props, ref) {
           </div>
           <div className="setting-option">
             <label htmlFor="operation">Operation</label>
-            <select id="operation" className="w-[75px]" ref={operationRef}>
+            <select id="operation" className="w-[6rem]" ref={operationRef}>
               <option value="+">+</option>
               <option value="-">-</option>
               <option value="x">×</option>
@@ -61,9 +61,9 @@ export default forwardRef(function SettingDialog(props, ref) {
         <section>
           <h3>Progress Bar Settings</h3>
 
-          <div className="setting-option option-checkbox">
+          <div className="setting-option">
             <label htmlFor="enable-progress-bar">Enabled</label>
-            <label className="relative h-full m-auto overflow-hidden border-2 rounded-sm cursor-pointer w-7 border-main-orange-vibrant">
+            <label className="relative m-auto overflow-hidden border-2 rounded-sm cursor-pointer h-7 sm:h-full w-7 border-main-orange-vibrant">
               <input
                 type="checkbox"
                 id="enable-progress-bar"

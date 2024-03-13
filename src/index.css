@@ -10,7 +10,7 @@
   }
 
   main {
-    @apply flex flex-col items-center w-full px-10 md:px-0 md:w-[600px] lg:w-[900px] mx-auto mb-5;
+    @apply flex flex-col items-center w-full gap-5 px-10 md:px-0 md:w-[600px] lg:w-[900px] mx-auto mb-5;
   }
   footer {
     @apply px-2 py-1 mt-auto text-white bg-black bg-opacity-20 text-opacity-80;
@@ -90,11 +90,11 @@
     @apply flex flex-col border-t-2 border-black;
   }
   .setting-main section h3 {
-    @apply text-2xl font-bold;
+    @apply text-2xl font-bold text-center sm:text-left;
   }
 
   .setting-option {
-    @apply grid grid-cols-[8rem_9rem] m-1;
+    @apply flex flex-col items-center xs:grid xs:grid-cols-[8rem_9rem] m-1;
   }
   .setting-option > label {
     @apply text-lg font-medium;
@@ -108,10 +108,10 @@
     @apply flex w-full p-2 min-h-fit bg-main-white-base drop-shadow-top;
   }
   .setting-action h3 {
-    @apply flex items-center justify-center flex-1;
+    @apply flex items-center justify-center flex-1 text-sm text-center xs:text-base;
   }
   .setting-action button {
-    @apply px-3 py-1 mx-1 rounded-full;
+    @apply px-2 mx-1 text-sm rounded-full xs:text-base xs:py-1 xs:px-3;
   }
 
   /** <- Header -> **/
@@ -120,10 +120,10 @@
   }
   #header h1 {
     font-family: "Roboto Slab", serif;
-    @apply font-medium text-transparent text-opacity-0 text-8xl bg-gradient-to-r from-main-orange-base to-main-orange-vibrant bg-clip-text;
+    @apply text-6xl font-medium text-transparent text-opacity-0 sm:text-8xl bg-gradient-to-r from-main-orange-base to-main-orange-vibrant bg-clip-text;
   }
   #header img {
-    @apply w-32;
+    @apply w-24 sm:w-32;
   }
 
   /** <- Main Quiz -> **/
@@ -132,7 +132,7 @@
   }
 
   .question-display {
-    @apply px-3 pt-5 text-5xl font-bold text-center bg-main-white-base;
+    @apply px-3 pt-5 text-3xl font-bold text-center break-words xs:text-4xl sm:text-5xl bg-main-white-base text-balance h-fit;
   }
   .answer-div {
     @apply flex flex-col items-center justify-center w-auto mx-10 my-3;
@@ -174,7 +174,7 @@
     @apply grid w-full gap-2 p-2 mt-2 md:grid-rows-2 md:grid-cols-2;
   }
   .choice-elem {
-    @apply text-4xl bg-main-white-base transition-all hover:drop-shadow-main-darker ease-bounce-end hover:-mt-0.5 hover:mb-0.5 active:mt-0.5 active:-mb-0.5 active:ease-linear active:duration-75;
+    @apply text-2xl xs:text-3xl sm:text-4xl bg-main-white-base transition-all hover:drop-shadow-main-darker ease-bounce-end hover:-mt-0.5 hover:mb-0.5 active:mt-0.5 active:-mb-0.5 active:ease-linear active:duration-75;
   }
   .choice-elem:disabled {
     @apply opacity-80 !m-0 hover:drop-shadow-main-base;
@@ -206,16 +206,16 @@
   }
   .congratulation-section > h2,
   .answer-report > h2 {
-    @apply w-full pt-12 pb-5 text-6xl font-bold text-center rounded-xl bg-main-white-base drop-shadow-main-base;
+    @apply w-full pt-12 pb-5 text-3xl font-bold text-center xs:text-5xl sm:text-6xl rounded-xl bg-main-white-base drop-shadow-main-base;
   }
   .congratulation-section > p {
-    @apply py-4 text-2xl text-center;
+    @apply py-4 text-xl text-center xs:text-2xl;
   }
   .congratulation-section > span {
     @apply absolute w-[100px] text-white -translate-x-1/2 border-main-orange-vibrant border-4 rounded-full p-2 bg-gradient-to-b from-main-white-base to-main-white-dark -top-12 left-1/2 drop-shadow-xl;
   }
   .congratulation-section > .redo {
-    @apply m-auto mb-4 text-2xl transition-all duration-75 ease-out px-7 bg-main-white-base hover:scale-95 active:scale-90 active:opacity-70 [&[disabled]]:hover:scale-100;
+    @apply m-auto  mb-4 text-xl xs:text-2xl transition-all duration-75 ease-out px-7 bg-main-white-base hover:scale-95 active:scale-90 active:opacity-70 [&[disabled]]:hover:scale-100;
   }
   .congratulation-section > .redo[disabled] {
     @apply !scale-100 !opacity-80;
@@ -227,17 +227,17 @@
     @apply flex flex-col items-center w-11/12 p-0 animate-fade-up;
   }
   .answer-report > h2 {
-    @apply !pt-5 text-5xl;
+    @apply !pt-5 text-2xl xs:text-4xl sm:text-5xl;
   }
 
   .data-div {
-    @apply flex items-center justify-center w-full gap-6 px-6 my-2;
+    @apply flex flex-col items-center justify-center w-full gap-6 px-2 my-4 sm:px-6 sm:flex-row;
   }
   .data-elem {
-    @apply flex flex-col items-center justify-center flex-1 bg-main-white-base;
+    @apply flex flex-col items-center justify-center w-full text-lg sm:flex-1 bg-main-white-base;
   }
   .data-elem h3 {
-    @apply text-4xl font-bold;
+    @apply text-4xl;
   }
   .data-elem p:first-of-type {
     @apply text-2xl font-bold;
@@ -250,25 +250,25 @@
 
   .report-list {
     animation-delay: 200ms !important;
-    @apply flex flex-col items-center w-full gap-4 animate-fade-up;
+    @apply flex flex-wrap items-center justify-center w-full gap-4 sm:flex-col animate-fade-up;
   }
 
   /* Report Elem */
   .report-elem {
-    @apply grid grid-cols-[1fr_1fr_80px] grid-rows-2 gap-2 w-2/3 h-44;
+    @apply flex flex-col sm:grid grid-cols-[1fr_1fr_80px] grid-rows-2 gap-2 w-3/4 md:w-2/3 h-fit sm:h-44;
   }
   .report-elem div {
     @apply bg-main-white-base drop-shadow-lg;
   }
 
   .report-question {
-    @apply flex flex-col items-center justify-center col-span-2 row-start-1;
+    @apply flex flex-col items-center justify-center col-span-2 row-start-1 text-base xs:text-lg;
   }
   .report-question p:first-child {
-    @apply text-lg;
+    @apply absolute text-sm xs:text-lg top-1 left-4;
   }
   .report-question p:last-child {
-    @apply text-3xl font-bold;
+    @apply text-xl font-bold xs:text-3xl;
   }
 
   .report-answer {
@@ -278,7 +278,7 @@
     @apply text-base;
   }
   .report-answer p:last-child {
-    @apply text-2xl font-bold;
+    @apply text-xl font-bold sm:text-2xl;
   }
   .user-answer {
     @apply col-start-1 row-start-2;
@@ -288,9 +288,9 @@
   }
 
   .report-feedback {
-    @apply flex items-center justify-center col-start-3 row-span-2;
+    @apply absolute flex items-center justify-center col-start-3 row-span-2 !bg-transparent sm:!bg-main-white-base right-2 top-1 sm:static;
   }
   .report-feedback > img {
-    @apply w-full m-2 drop-shadow-xl;
+    @apply w-full m-2 !bg-transparent xs:min-w-7 drop-shadow-none sm:drop-shadow-xl;
   }
 }

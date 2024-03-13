@@ -116,9 +116,7 @@ function ReportElem({report, index}) {
   return (
     <div className="card report-elem">
       <div className="card report-question">
-        <p className="absolute top-1 left-4">
-          <span className="font-bold">Q</span>. {index}
-        </p>
+        <p>Q.{index}</p>
         <p>Question</p>
         <p>{report.question}</p>
       </div>
@@ -130,7 +128,7 @@ function ReportElem({report, index}) {
         <p>Correct Answer</p>
         <p>{report.correctAnswer}</p>
       </div>
-      <div className="card report-feedback">
+      <div className="report-feedback">
         <img src={stateImg} alt="correct" />
       </div>
     </div>
